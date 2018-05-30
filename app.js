@@ -9,8 +9,11 @@ const app = express();
 mongoose.connect('mongoDB://localhost/vidjot-dev')
 .then(() => console.log('mongoDb connected'))
 .catch(err => console.log(err));
+//Load idea model
+require('./models/Idea');
+const Idea = mongoose.model('ideas');
 
-//Handlebars Middleware
+//Handlebars Middleware (app.engine & app.set lines copied from handlebars documentation)
 app.engine('handlebars', exphbs({
     //What you want on every page (views/layout/main.handlebars)
     defaultLayout: 'main'
