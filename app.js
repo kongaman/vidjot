@@ -2,7 +2,6 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 
-const port= 5000;
 const app = express();
 
 //Connect to mongoose
@@ -32,8 +31,12 @@ app.get('/about', (req, res) => {
     res.render('ABOUT');
 });
 
+//Add Idea form
+app.get('/ideas/add', (req, res) => {
+    res.render('ideas/add');
+});
 
-
+const port= 5000;
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
