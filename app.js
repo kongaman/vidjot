@@ -38,12 +38,12 @@ app.get('/about', (req, res) => {
 
 //Idea Index Page
 app.get('/ideas', (req, res) => {
-    Idea.find({})   //Datenbanksuche nach * (* ist in noSQL leere "{}"  
-                    //"Idea" kommt von: const Idea = mongoose.model('ideas') - Line 14
-        .sort({ date: 'desc'}) //Ergebnisse nach datum sortieren
+    Idea.find({})               //Datenbanksuche nach * (* ist in noSQL leere "{}"  
+                                //"Idea" kommt von: const Idea = mongoose.model('ideas') - Line 14
+        .sort({ date: 'desc'})  //Ergebnisse nach datum sortieren
         .then(ideas => {
             res.render('ideas/index', { // Verweist auf ./views/ideas/index.handlebars
-                ideas:ideas
+                ideas:ideas             //gibt das gefundene ideas-array weiter
             });
         }); 
 });
@@ -52,6 +52,25 @@ app.get('/ideas', (req, res) => {
 app.get('/ideas/add', (req, res) => {
     res.render('ideas/add'); // Verweist auf ./views/ideas/add.handlebars
     
+});
+//Edit Idea form
+app.get('/ideas/edit/:id', (req, res) => {
+    Idea.findOne({          //findOne gibt genau 1 Eintrag zurück (erstaunlichwerise... :-D)
+        _id: req.params.id  //_id = die id des Eintrags in der DB
+                            //
+                            //in Terminal:
+                            //mongo
+                            //use vidjot-dev
+                            //show collections
+                            //db.ideas.find();
+                            //
+                            //req.params.id nimmt :id aus dem Requestaufruf /ideas/edit/:id
+    })
+    .then(idea => {
+        res.render('ideas/edit', {  // Verweist auf ./views/ideas/edit.handlebar
+            idea:idea               //gibt den gefundenen DB eintrag weiter
+        });
+    });
 });
 
 //Process form
