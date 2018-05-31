@@ -1,6 +1,8 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
@@ -32,12 +34,22 @@ app.engine('handlebars', exphbs({
 }));
 app.set('view engine', 'handlebars');
 
-// Body parser middleware
+// Body parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // method-override Middleware
 app.use(methodOverride('_method'));
+
+// express-session Middleware
+app.use(session({ 
+    secret: 'konga',
+    resave: true,
+    saveUninitialized: true
+}));
+
+// connect-flash Middleware
+app.use(flash());
 
 
 //-------------------------------------------------------------------------------------------------------
