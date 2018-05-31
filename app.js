@@ -23,7 +23,7 @@ const Idea = mongoose.model('ideas');
 //-------------------------------------------------------------------------------------------------------
 //------------------------------------------- MIDDLEWARE ------------------------------------------------
 //-------------------------------------------------------------------------------------------------------
-// Lines below are copied from the coresponding github README Files
+// Lines below are copied from the coresponding github READMEs or Documentation Files
 
 //Handlebars Middleware 
 app.engine('handlebars', exphbs({
@@ -131,8 +131,16 @@ app.put('/ideas/:id', (req, res) => {
         idea.details = req.body.details;
         idea.save()
         .then(idea => {
-            res.redirect('/ideas')
+            res.redirect('/ideas');
         })
+    });
+});
+
+//Delete Idea
+app.delete('/ideas/:id', (req, res) => {
+    Idea.remove({_id: req.params.id})
+    .then(() => {
+        res.redirect('/ideas');
     });
 });
 
