@@ -51,6 +51,14 @@ app.use(session({
 // connect-flash Middleware
 app.use(flash());
 
+//Middleware - Global Variables for Messages
+app.use(function(req, res, next) {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    next();
+});
+
 
 //-------------------------------------------------------------------------------------------------------
 //---------------------------------------------- ROUTES -------------------------------------------------
@@ -128,6 +136,7 @@ app.post('/ideas', (req, res) => {
         new Idea(newUser)
         .save()
         .then(idea => {
+            req.flash('success_msg', 'Video Idea added');
             res.redirect('/ideas');
         });
     }
@@ -143,6 +152,7 @@ app.put('/ideas/:id', (req, res) => {
         idea.details = req.body.details;
         idea.save()
         .then(idea => {
+            req.flash('success_msg', 'Video Idea updated');
             res.redirect('/ideas');
         })
     });
@@ -152,6 +162,7 @@ app.put('/ideas/:id', (req, res) => {
 app.delete('/ideas/:id', (req, res) => {
     Idea.remove({_id: req.params.id})
     .then(() => {
+        req.flash('success_msg', 'Video Idea removed');
         res.redirect('/ideas');
     });
 });
