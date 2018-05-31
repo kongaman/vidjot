@@ -1,9 +1,15 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
+const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
+
+
+//-------------------------------------------------------------------------------------------------------
+//------------------------------------------- DATABASE --------------------------------------------------
+//-------------------------------------------------------------------------------------------------------
 
 //Connect to mongoose
 mongoose.connect('mongoDB://localhost/vidjot-dev')
@@ -13,9 +19,15 @@ mongoose.connect('mongoDB://localhost/vidjot-dev')
 require('./models/Idea');
 const Idea = mongoose.model('ideas');
 
-//Handlebars Middleware (app.engine & app.set lines copied from handlebars documentation)
+
+//-------------------------------------------------------------------------------------------------------
+//------------------------------------------- MIDDLEWARE ------------------------------------------------
+//-------------------------------------------------------------------------------------------------------
+// Lines below are copied from the coresponding github README Files
+
+//Handlebars Middleware 
 app.engine('handlebars', exphbs({
-    //What you want on every page (views/layout/main.handlebars)
+    //What you want on every page (defined in: ./views/layout/main.handlebars)
     defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
@@ -24,14 +36,22 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// method-override Middleware
+app.use(methodOverride('_method'));
+
+
+//-------------------------------------------------------------------------------------------------------
+//---------------------------------------------- ROUTES -------------------------------------------------
+//-------------------------------------------------------------------------------------------------------
+
 //Index Route
 app.get('/', (req, res) => {
     const title = 'Welcome!'
     res.render('INDEX', {
-        title: title
+        title: title  // const title = 'Welcome!'
     });
 });
-
+//About Route
 app.get('/about', (req, res) => {
     res.render('ABOUT');
 });
@@ -100,6 +120,25 @@ app.post('/ideas', (req, res) => {
         });
     }
 });
+
+// Process Edit form
+app.put('/ideas/:id', (req, res) => {
+    Idea.findOne({
+        _id: req.params.id
+    })
+    .then(idea => {
+        idea.title = req.body.title;
+        idea.details = req.body.details;
+        idea.save()
+        .then(idea => {
+            res.redirect('/ideas')
+        })
+    });
+});
+
+//-------------------------------------------------------------------------------------------------------
+//------------------------------------------------ SERVER -----------------------------------------------
+//-------------------------------------------------------------------------------------------------------
 
 const port= 5000;
 app.listen(port, () => {

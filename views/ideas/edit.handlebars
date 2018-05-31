@@ -4,7 +4,10 @@
 {{/each}}
 <div class="card card-body">
     <h3>Edit Video Idea</h3>
-    <form action="/ideas" method="post">
+    <form action="/ideas/{{idea.id}}?_method=PUT" method="post">
+    <!-- ?_method=PUT is needed for method-override middleware --> 
+        <input type="hidden" name="_method" value="PUT">
+        <!-- hidden input for method-override middleware -->
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" name="title" class="form-control" value="{{idea.title}}" required>
