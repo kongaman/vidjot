@@ -36,9 +36,22 @@ app.get('/about', (req, res) => {
     res.render('ABOUT');
 });
 
+//Idea Index Page
+app.get('/ideas', (req, res) => {
+    Idea.find({})   //Datenbanksuche nach * (* ist in noSQL leere "{}"  
+                    //"Idea" kommt von: const Idea = mongoose.model('ideas') - Line 14
+        .sort({ date: 'desc'}) //Ergebnisse nach datum sortieren
+        .then(ideas => {
+            res.render('ideas/index', { // Verweist auf ./views/ideas/index.handlebars
+                ideas:ideas
+            });
+        }); 
+});
+
 //Add Idea form
 app.get('/ideas/add', (req, res) => {
-    res.render('ideas/add');
+    res.render('ideas/add'); // Verweist auf ./views/ideas/add.handlebars
+    
 });
 
 //Process form
