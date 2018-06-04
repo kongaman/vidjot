@@ -4,12 +4,12 @@ const mongoose = require('mongoose');
 
 //User login route
 router.get('/login',(req, res) => {
-    res.send('LOGIN');
+    res.render('users/login');
 });
 
 //User register route
 router.get('/register',(req, res) => {
-    res.send('register');
+    res.render('users/register');
 });
 
 
