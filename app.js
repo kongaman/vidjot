@@ -49,17 +49,21 @@ app.use(bodyParser.json());
 //sets public folder to be the express static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// method-override Middleware
+//method-override Middleware
 app.use(methodOverride('_method'));
 
-// express-session Middleware
+//express-session Middleware
 app.use(session({ 
     secret: 'konga',
     resave: true,
     saveUninitialized: true
 }));
 
-// connect-flash Middleware
+//passport middleware (has to be AFTER express session middleware)
+app.use(passport.initialize());
+app.use(passport.session());
+
+//connect-flash Middleware
 app.use(flash());
 
 //Middleware - Global Variables for Messages
@@ -67,6 +71,7 @@ app.use(function(req, res, next) {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    res.locals.user = req.user || null; //req.user is only there if logged in, else its null
     next();
 });
 
