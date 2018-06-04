@@ -19,7 +19,8 @@
     <!--  -->
     <div class="container">
         {{> _msg}}
-        <!-- partials _msg.handlebars -->
+        {{> _errors}}
+        <!-- partials _msg.handlebars / _errors.handlebars -->
         {{{body}}}
         <!-- comes from about-handlebars, index.handlebars etc -->
     </div>
