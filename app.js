@@ -16,14 +16,15 @@ const users = require('./routes/users');
 
 //Passport Config
 require('./config/passport')(passport);
-
+//DB Config
+const db = require('./config/database');
 
 //-------------------------------------------------------------------------------------------------------
 //------------------------------------------- DATABASE --------------------------------------------------
 //-------------------------------------------------------------------------------------------------------
 
 //Connect to mongoose
-mongoose.connect('mongoDB://localhost/vidjot-dev')
+mongoose.connect(db.mongoURI)
 .then(() => console.log('mongoDb connected'))
 .catch(err => console.log(err));
 
@@ -104,7 +105,7 @@ app.use('/users', users);
 //------------------------------------------------ SERVER -----------------------------------------------
 //-------------------------------------------------------------------------------------------------------
 
-const port= 5000;
+const port = process.env.PORT || 5000; //necessary for Heroku-deployment
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
