@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const {ensureAuthenticated} = require('../helpers/auth');
 
 //Load idea model
 require('../models/Idea');
 const Idea = mongoose.model('ideas');
 
 //Idea Index Page
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
     Idea.find({})               //Datenbanksuche nach * (* ist in noSQL leere "{}"  
                                 //"Idea" kommt von: const Idea = mongoose.model('ideas') - Line 14
         .sort({ date: 'desc'})  //Ergebnisse nach datum sortieren
@@ -19,12 +20,12 @@ router.get('/', (req, res) => {
 });
 
 //Add Idea form
-router.get('/add', (req, res) => {
+router.get('/add', ensureAuthenticated, (req, res) => {
     res.render('ideas/add'); // Verweist auf ./views/ideas/add.handlebars
     
 });
 //Edit Idea form
-router.get('/edit/:id', (req, res) => {
+router.get('/edit/:id', ensureAuthenticated, (req, res) => {
     Idea.findOne({          //findOne gibt genau 1 Eintrag zurück (erstaunlichwerise... :-D)
         _id: req.params.id  //_id = die id des Eintrags in der DB
                             //
@@ -44,7 +45,7 @@ router.get('/edit/:id', (req, res) => {
 });
 
 //Process form
-router.post('/', (req, res) => {
+router.post('/', ensureAuthenticated, (req, res) => {
     let errors = [];
     if (!req.body.title) {
         errors.push({text: 'Please add a title'})
@@ -73,7 +74,7 @@ router.post('/', (req, res) => {
 });
 
 // Process Edit form
-router.put('/:id', (req, res) => {
+router.put('/:id', ensureAuthenticated, (req, res) => {
     Idea.findOne({
         _id: req.params.id
     })
@@ -89,7 +90,7 @@ router.put('/:id', (req, res) => {
 });
 
 //Delete Idea
-router.delete('/:id', (req, res) => {
+router.delete('/:id', ensureAuthenticated, (req, res) => {
     Idea.remove({_id: req.params.id})
     .then(() => {
         req.flash('success_msg', 'Video Idea removed');
