@@ -9,8 +9,9 @@ const Idea = mongoose.model('ideas');
 
 //Idea Index Page
 router.get('/', ensureAuthenticated, (req, res) => {
-    Idea.find({})               //Datenbanksuche nach * (* ist in noSQL leere "{}"  
-                                //"Idea" kommt von: const Idea = mongoose.model('ideas') - Line 14
+    Idea.find({user: req.user.id})  //Datenbanksuche nach * (* ist in noSQL leere "{}" -
+                                    // jetzt nach ideas des eingeloggten users
+                                    //"Idea" kommt von: const Idea = mongoose.model('ideas') - Line 14
         .sort({ date: 'desc'})  //Ergebnisse nach datum sortieren
         .then(ideas => {
             res.render('ideas/index', { // Verweist auf ./views/ideas/index.handlebars
@@ -38,9 +39,14 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
                             //req.params.id nimmt :id aus dem Requestaufruf /ideas/edit/:id
     })
     .then(idea => {
-        res.render('ideas/edit', {  // Verweist auf ./views/ideas/edit.handlebar
-            idea:idea               //gibt den gefundenen DB eintrag weiter
-        });
+        if (idea.user != req.user.id) {  //id eingeloggter user != Userid des idea-erstellers
+            req.flash('error_msg', 'Not Authorized');
+            res.redirect('/ideas');
+        } else {
+            res.render('ideas/edit', {  // Verweist auf ./views/ideas/edit.handlebar
+                idea:idea               //gibt den gefundenen DB eintrag weiter
+            });
+        }
     });
 });
 
@@ -62,7 +68,8 @@ router.post('/', ensureAuthenticated, (req, res) => {
     } else {
         const newUser = {
             title: req.body.title,
-            details: req.body.details
+            details: req.body.details,
+            user:req.user.id
         }
         new Idea(newUser)
         .save()
